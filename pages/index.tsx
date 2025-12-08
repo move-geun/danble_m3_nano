@@ -28,6 +28,8 @@ const DEFAULT_RULEBOOK = `Placement Criteria
 - Underwear: Halfway down the right side and place it on the jacket
 - Shoes: Two pairs in one direction on the bottom left corner (only air shot)
 - Socks: Only if the product is provided, Two pairs on the right side of the shoe (air shot)
+- Scarf (if provided):
+ • Wrap naturally around the neck with “Loop-m-through" style
 - Put your jacket in your jacket and flip it over
 - Place entire items in a way that does not cut neatly within margin criteria
 - Use only the items in the picture
