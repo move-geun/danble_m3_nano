@@ -17,8 +17,32 @@ interface JsonData {
   products: Product[] | { [key: string]: Product };
 }
 
+// 기본 Rulebook 텍스트
+const DEFAULT_RULEBOOK = `Placement Criteria
+- [**No shadow, flat single solid background**]
+- [** Never place things on the edge.**]
+- [**offWhite solid using background color, (240, 240, 236) #F0F0EC**]
+- The entire product should be placed within the canvas.
+(Only if the product is provided, the following items apply.)
+- Coat: Spread flat in the center of the jacket (natural sleeves and hem)
+- Underwear: Halfway down the right side and place it on the jacket
+- Shoes: Two pairs in one direction on the bottom left corner (only air shot)
+- Socks: Only if the product is provided, Two pairs on the right side of the shoe (air shot)
+- Put your jacket in your jacket and flip it over
+- Place entire items in a way that does not cut neatly within margin criteria
+- Use only the items in the picture
+- There's no light at all
+- Clothes wrinkles, shades, textures, and colors are the same as real clothes
+- Keep your jacket flat
+- Place the outer layer naturally so that only one side is open
+- The sleeves and collar are also organized using the actual texture of the fabric
+- The whole structure is as orderly as it used to be
+- Add adequate padding/margin around the edge
+- Minimize top, bottom, left and right margins to ensure clear visibility of the product`;
+
 export default function Home() {
   const [jsonInput, setJsonInput] = useState("");
+  const [rulebookInput, setRulebookInput] = useState(DEFAULT_RULEBOOK);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
     image_url: string;
@@ -106,6 +130,7 @@ export default function Home() {
       const response = await axios.post(`${apiUrl}/api/generate`, {
         style_id: data.style_id || undefined,
         json_string: jsonInput.trim(), // 원본 JSON 문자열 전송
+        custom_rulebook: rulebookInput.trim() || undefined, // 사용자 정의 rulebook 전송
       });
 
       setResult(response.data);
@@ -196,6 +221,38 @@ export default function Home() {
               지원됩니다.
               <br />
               style_id는 선택사항이며, JSON에서 자동으로 추출됩니다.
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Rulebook 설정</h2>
+            <button
+              onClick={() => setRulebookInput(DEFAULT_RULEBOOK)}
+              className={styles.exampleButton}
+            >
+              기본값으로 리셋
+            </button>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              Rulebook 텍스트 <span className={styles.required}>*</span>
+            </label>
+            <textarea
+              value={rulebookInput}
+              onChange={(e) => setRulebookInput(e.target.value)}
+              className={styles.textarea}
+              placeholder="Rulebook을 입력하세요..."
+              rows={15}
+            />
+            <div className={styles.jsonHint}>
+              💡 <strong>Rulebook:</strong> 이미지 생성 시 적용될 규칙을
+              정의합니다.
+              <br />
+              기본값은 현재 사용 중인 rulebook입니다. 필요에 따라 수정할 수
+              있습니다.
             </div>
           </div>
         </section>
