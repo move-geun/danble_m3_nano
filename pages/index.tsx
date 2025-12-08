@@ -45,6 +45,7 @@ const DEFAULT_RULEBOOK = `Placement Criteria
 export default function Home() {
   const [jsonInput, setJsonInput] = useState("");
   const [rulebookInput, setRulebookInput] = useState(DEFAULT_RULEBOOK);
+  const [isRulebookExpanded, setIsRulebookExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
     image_url: string;
@@ -229,34 +230,44 @@ export default function Home() {
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Rulebook 설정</h2>
-            <button
-              onClick={() => setRulebookInput(DEFAULT_RULEBOOK)}
-              className={styles.exampleButton}
+            <h2
+              className={styles.sectionTitle}
+              style={{ cursor: "pointer", userSelect: "none" }}
+              onClick={() => setIsRulebookExpanded(!isRulebookExpanded)}
             >
-              기본값으로 리셋
-            </button>
+              {isRulebookExpanded ? "▼" : "▶"} Rulebook 설정
+            </h2>
+            {isRulebookExpanded && (
+              <button
+                onClick={() => setRulebookInput(DEFAULT_RULEBOOK)}
+                className={styles.exampleButton}
+              >
+                기본값으로 리셋
+              </button>
+            )}
           </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>
-              Rulebook 텍스트 <span className={styles.required}>*</span>
-            </label>
-            <textarea
-              value={rulebookInput}
-              onChange={(e) => setRulebookInput(e.target.value)}
-              className={styles.textarea}
-              placeholder="Rulebook을 입력하세요..."
-              rows={15}
-            />
-            <div className={styles.jsonHint}>
-              💡 <strong>Rulebook:</strong> 이미지 생성 시 적용될 규칙을
-              정의합니다.
-              <br />
-              기본값은 현재 사용 중인 rulebook입니다. 필요에 따라 수정할 수
-              있습니다.
+          {isRulebookExpanded && (
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Rulebook 텍스트 <span className={styles.required}>*</span>
+              </label>
+              <textarea
+                value={rulebookInput}
+                onChange={(e) => setRulebookInput(e.target.value)}
+                className={styles.textarea}
+                placeholder="Rulebook을 입력하세요..."
+                rows={15}
+              />
+              <div className={styles.jsonHint}>
+                💡 <strong>Rulebook:</strong> 이미지 생성 시 적용될 규칙을
+                정의합니다.
+                <br />
+                기본값은 현재 사용 중인 rulebook입니다. 필요에 따라 수정할 수
+                있습니다.
+              </div>
             </div>
-          </div>
+          )}
         </section>
 
         <div className={styles.actionSection}>
