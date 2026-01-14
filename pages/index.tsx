@@ -4,6 +4,7 @@ import axios from "axios";
 import styles from "../styles/Home.module.css";
 
 const COOKIE_NAME = "m3_nano_auth";
+const RULEBOOK_STORAGE_KEY = "m3_nano_rulebook";
 
 interface Product {
   type: string;
@@ -17,7 +18,7 @@ interface JsonData {
   products: Product[] | { [key: string]: Product };
 }
 
-// 기본 Rulebook 텍스트
+
 const DEFAULT_RULEBOOK = `Placement Criteria
 - [**No shadow, flat single solid background**]
 - [** Never place things on the edge.**]
@@ -76,6 +77,14 @@ export default function Home() {
     }
   }, [router]);
 
+  // 로컬스토리지에서 Rulebook 로드
+  useEffect(() => {
+    const savedRulebook = localStorage.getItem(RULEBOOK_STORAGE_KEY);
+    if (savedRulebook) {
+      setRulebookInput(savedRulebook);
+    }
+  }, []);
+
   const validateJson = (
     jsonStr: string
   ): { valid: boolean; data?: JsonData; error?: string } => {
@@ -112,6 +121,9 @@ export default function Home() {
   };
 
   const handleGenerate = async () => {
+    // 버튼 클릭 시 즉시 Rulebook 저장
+    localStorage.setItem(RULEBOOK_STORAGE_KEY, rulebookInput);
+
     setLoading(true);
     setError("");
     setResult(null);
@@ -135,6 +147,8 @@ export default function Home() {
         json_string: jsonInput.trim(), // 원본 JSON 문자열 전송
         custom_rulebook: rulebookInput.trim() || undefined, // 사용자 정의 rulebook 전송
       });
+
+
 
       setResult(response.data);
     } catch (err: any) {
@@ -210,9 +224,8 @@ export default function Home() {
             <textarea
               value={jsonInput}
               onChange={(e) => handleJsonChange(e.target.value)}
-              className={`${styles.textarea} ${
-                jsonError ? styles.textareaError : ""
-              }`}
+              className={`${styles.textarea} ${jsonError ? styles.textareaError : ""
+                }`}
               placeholder={`{"style_id":"4783","products":[{"type":"TOP","sub_type":"긴팔셔츠/남방","image_url":"https://..."},{"type":"BOTTOM","sub_type":"슬랙스","image_url":"https://..."}]}`}
               rows={6}
             />
